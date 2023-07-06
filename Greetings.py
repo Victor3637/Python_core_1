@@ -1,16 +1,12 @@
 from datetime import datetime, timedelta
 
 def get_birthdays_per_week(users):
-    # Отримуємо поточну дату
     current_date = datetime.now().date()
+    current_year = datetime.now().year
 
-    # Знаходимо перше понеділок після поточної дати
     start_date = current_date + timedelta(days=(0 - current_date.weekday()) % 7)
-
-    # Знаходимо кінцеву дату, яка є першим понеділком після тижня
     end_date = start_date + timedelta(days=7)
 
-    # Створюємо словник, де ключами є дні тижня, а значеннями - списки імен користувачів
     birthdays = {
         "Monday": [],
         "Tuesday": [],
@@ -21,29 +17,22 @@ def get_birthdays_per_week(users):
         "Sunday": []
     }
 
-    # Проходимо по кожному користувачу і додаємо його до відповідного дня тижня в словнику birthdays
     for user in users:
         name = user["name"]
-        birthday = user["birthday"].date()
+        birthday = datetime(current_year, user["birthday"].month, user["birthday"].day).date()
 
-        # Перевіряємо, чи день народження користувача потрапляє в діапазон тижня
         if start_date <= birthday < end_date:
-            # Визначаємо день тижня дня народження
             weekday = birthday.strftime("%A")
 
-            # Додаємо ім'я користувача до відповідного дня тижня
             if weekday == "Saturday" or weekday == "Sunday":
-                # Якщо день народження на вихідних, додаємо в понеділок
                 birthdays["Monday"].append(name)
             else:
                 birthdays[weekday].append(name)
 
-    # Виводимо список користувачів по днях тижня
     for weekday, names in birthdays.items():
         if names:
             print(f"{weekday}: {', '.join(names)}")
 
-# Старий код
 users = [
     {"name": "John", "birthday": datetime(1990, 3, 15)},
     {"name": "Emily", "birthday": datetime(1992, 5, 20)},
